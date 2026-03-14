@@ -28,4 +28,13 @@ export const MOCK_SUBJECTS: Subject[] = [
       "Mechanics, motion, and energy principles with experiments to build analytical and scientific reasoning.",
     createdAt: "2026-01-15T11:15:00.000Z",
   },
+  {
+    id: 4,
+    code: "ENG202",
+    name: "English Literature",
+    department: "english",
+    description:
+      "Exploration of literary works from various periods and cultures, focusing on critical analysis and interpretation.",
+    createdAt: "2026-01-18T14:00:00.000Z",
+  },
 ];
