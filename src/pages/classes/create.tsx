@@ -14,6 +14,8 @@ import { useForm } from "react-hook-form";
 import { classSchema } from "@/lib/schema.ts";
 import * as z from "zod";
 
+import UploadWidget from "@/components/upload-widget.tsx";
+
 import {
   Form,
   FormControl,
@@ -55,7 +57,7 @@ const Create = () => {
 
   const {
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
     control,
   } = form;
 
@@ -91,6 +93,24 @@ const Create = () => {
     },
   ];
 
+  const bannerPublicId = form.watch("bannerCldPubId");
+
+  const setBannerImage = (field, file) => {
+    if (file) {
+      field.onChange(file.url);
+      form.setValue("bannerCldPubId", file.publicId, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+    } else {
+      field.onChange("");
+      form.setValue("bannerCldPubId", "", {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+    }
+  };
+
   return (
     <CreateView className="class-view">
       <Breadcrumb />
@@ -116,13 +136,40 @@ const Create = () => {
           <CardContent className="mt-7">
             <Form {...form}>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-                <div className="space-y-3">
-                  <Label>
-                    Banner Image <span className="text-orange-600">*</span>
-                  </Label>
+                <FormField
+                  control={control}
+                  name="bannerUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Banner Image <span className="text-orange-600">*</span>
+                      </FormLabel>
+                      <FormControl>
+                        <UploadWidget
+                          value={
+                            field.value
+                              ? {
+                                  url: field.value,
+                                  publicId: bannerPublicId ?? "",
+                                }
+                              : null
+                          }
+                          onChange={(file: any, field: any) =>
+                            setBannerImage(field, file)
+                          }
+                        />
+                      </FormControl>
 
-                  <p>Upload image widget</p>
-                </div>
+                      <FormMessage />
+                      {errors.bannerCldPubId && !errors.bannerUrl && (
+                        <p className="text-destructive text-sm text-red-600 mt-1">
+                          {errors.bannerCldPubId.message?.toString() ||
+                            "Banner image is required."}
+                        </p>
+                      )}
+                    </FormItem>
+                  )}
+                />
 
                 <FormField
                   control={control}
